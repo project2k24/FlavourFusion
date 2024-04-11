@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f3f4f6; /* Light gray background color */
+        }
+    </style>
+</head>
+
+<body>
+    <section class="bg-gray-100 min-h-screen flex justify-center items-center">
+        <div class="bg-yellow-400 rounded-2xl flex max-w-3xl p-5 items-center">
+            <div class="md:w-1/2 px-8">
+                <h2 class="font-bold text-3xl text-blue-900">Login</h2>
+                <p class="text-sm mt-4 text-blue-900">If you are already a member, easily log in now.</p>
+
+                <form id="loginForm" class="flex flex-col gap-4 mt-8">
+                    <input id="username" class="p-2 rounded-lg border" type="text" name="username"
+                        placeholder="Username">
+                    <input id="password" class="p-2 rounded-lg border" type="password" name="password"
+                        placeholder="Password">
+                    <button onclick="authenticate(event)"
+                        class="bg-blue-900 text-white py-2 rounded-lg hover:scale-105 duration-300 hover:bg-blue-700 font-medium"
+                        type="submit">Login</button>
+                </form>
+
+                <div id="errorMessage" class="mt-4 text-red-600 hidden">Invalid username or password.</div>
+            </div>
+            <div class="md:block hidden w-1/2">
+                <img class="rounded-2xl max-h-[400px]" src="Flavour.png"
+                    alt="login form image">
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function authenticate(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Check hardcoded credentials
+            if (username === 'admin' && password === 'admin') {
+                // Redirect to index.html upon successful login
+                window.location.href = 'home.html';
+            } else {
+                // Display error message for invalid credentials
+                document.getElementById('errorMessage').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavour Fusion</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa; /* Light gray background color */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #343a40; /* Dark text color */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #002D74; /* Brand color */
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        #results {
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        #results .recipe {
+            max-width: 300px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        #results img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        #results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        #results ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        #results ul li {
+            margin-bottom: 5px;
+        }
+        #results a {
+            margin-top: auto; /* Align button to the bottom */
+            align-self: flex-end;
+            color: #007bff; /* Bootstrap primary color */
+            text-decoration: none;
+        }
+        .bottom-section {
+            padding: 40px 20px;
+            background-color: #002D74; /* Dark blue background color */
+            color: #ffffff; /* Light text color */
+        }
+        .bottom-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .bottom-section p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .bottom-section .btn {
+            background-color: #ffa500; /* Orange button color */
+            border-color: #ffa500;
+        }
+        footer {
+            background-color: #343a40; /* Dark footer background color */
+            color: #ffffff; /* Light text color */
+            padding: 40px 0;
+        }
+        footer a {
+            color: #ffffff; /* Footer link color */
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #ffc107; /* Footer link hover color */
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Flavour Fusion</h1>
+        <form class="my-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="search" placeholder="Enter ingredients">
+                <div class="input-group-append">
+                    <button onclick="searchRecipes()" id="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        <div id="results"></div>
+    </div>
+
+    <footer class="mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <address>
+                        <p>Email: flavourfusion@gmail.com</p>
+                        <p>Phone: 95781234</p>
+                    </address>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2024 Your Website Name</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchForm = document.querySelector('form');
+            const searchInput = document.querySelector('#search');
+            const resultsList = document.querySelector('#results');
+    
+            searchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+    
+                try {
+                    const searchValue = searchInput.value.trim();
+                    const response = await fetch(`https://api.edamam.com/search?q=${searchValue}&app_id=74193a31&app_key=808d4c6b03a8f91ab0835f42621deedd&from=0&to=10`);
+    
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+    
+                    const data = await response.json();
+                    displayRecipes(data.hits);
+                } catch (error) {
+                    console.error('Error fetching and parsing data:', error);
+                    resultsList.innerHTML = '<p>Failed to fetch recipes. Please try again later.</p>';
+                }
+            });
+    
+            function displayRecipes(recipes) {
+                resultsList.innerHTML = ''; // Clear previous results
+                recipes.forEach((recipe) => {
+                    const recipeCard = document.createElement('div');
+                    recipeCard.classList.add('recipe');
+    
+                    const image = document.createElement('img');
+                    image.src = recipe.recipe.image;
+                    image.alt = recipe.recipe.label;
+                    recipeCard.appendChild(image);
+    
+                    const title = document.createElement('h3');
+                    title.textContent = recipe.recipe.label;
+                    recipeCard.appendChild(title);
+    
+                    const ingredientsList = document.createElement('ul');
+                    recipe.recipe.ingredientLines.forEach((ingredient) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = ingredient;
+                        ingredientsList.appendChild(listItem);
+                    });
+                    recipeCard.appendChild(ingredientsList);
+    
+                    const viewButton = document.createElement('a');
+                    viewButton.href = recipe.recipe.url;
+                    viewButton.target = '_blank';
+                    viewButton.textContent = 'View Recipe';
+                    recipeCard.appendChild(viewButton);
+    
+                    resultsList.appendChild(recipeCard);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
